@@ -16,7 +16,7 @@ WebServer server(80);
 // --- Limiares e Constantes ---
 const int LIMIAR_NOTURNO = 500;             // Limiar na escala de 0 a 4095
 const unsigned long DEBOUNCE_DELAY = 200;    // Janela de debounce em milissegundos
-const unsigned long SOS_DURATION = 3000;    // Duração do estado de emergência (3s)
+const unsigned long SOS_DURATION = 1500;    // Duração do estado de emergência (3s)
 
 // --- Variáveis Voláteis (Modificadas na ISR) ---
 volatile bool sosSolicitado = false;
@@ -47,18 +47,42 @@ void IRAM_ATTR isrBotaoSOS() {
 // HANDLERS DO SERVIDOR WEB (INTERFACE HTTP)
 // ============================================================================
 void handleRoot() {
+
+  Serial.println("\n==============================");
+  Serial.println("[WEB] NOVO ACESSO DETECTADO");
+  Serial.print("[WEB] URI: ");
+  Serial.println(server.uri());
+
+  IPAddress ip = server.client().remoteIP();
+
+  Serial.print("[WEB] IP Cliente: ");
+  Serial.print(ip[0]);
+  Serial.print(".");
+  Serial.print(ip[1]);
+  Serial.print(".");
+  Serial.print(ip[2]);
+  Serial.print(".");
+  Serial.println(ip[3]);
+
+  Serial.print("[WEB] Timestamp (ms): ");
+  Serial.println(millis());
+
   String html = "<!DOCTYPE html><html><head><meta charset='UTF-8'>";
   html += "<title>PCS3732 - Telemetria Smart Monitoring</title>";
-  html += "<meta http-equiv='refresh' content='1'>"; // Atualização automática >= 1Hz
-  html += "<style>body{font-family:Arial,sans-serif; text-align:center; padding-top:50px; background-color:#f4f4f4;}";
-  html += ".container{background:white; padding:30px; display:inline-block; border-radius:10px; box-shadow:0px 0px 10px rgba(0,0,0,0.1);}";
-  html += "h1{color:#333;} .value{font-size:48px; font-weight:bold; color:#0056b3;}</style></head><body>";
-  html += "<div class='container'><h1>Sistema de Monitoramento Inteligente</h1>";
+  html += "<meta http-equiv='refresh' content='1'>";
+  html += "<style>body{font-family:Arial,sans-serif;text-align:center;padding-top:50px;background-color:#f4f4f4;}";
+  html += ".container{background:white;padding:30px;display:inline-block;border-radius:10px;box-shadow:0px 0px 10px rgba(0,0,0,0.1);}";
+  html += "h1{color:#333;} .value{font-size:48px;font-weight:bold;color:#0056b3;}</style></head><body>";
+
+  html += "<div class='container'>";
+  html += "<h1>Sistema de Monitoramento Inteligente</h1>";
   html += "<p>Leitura do Conversor ADC (LDR):</p>";
   html += "<div class='value'>" + String(valorAdcLdr) + "</div>";
-  html += "<p>Estado do Ambiente: " + String((valorAdcLdr >= LIMIAR_NOTURNO) ? "NOTURNO (Baixa Luz)" : "DIURNO (Ok)") + "</p>";
+  html += "<p>Estado do Ambiente: ";
+  html += (valorAdcLdr >= LIMIAR_NOTURNO) ? "NOTURNO (Baixa Luz)" : "DIURNO (Ok)";
+  html += "</p>";
   html += "</div></body></html>";
-  
+
   server.send(200, "text/html", html);
 }
 
@@ -106,8 +130,8 @@ void loop() {
   if (sosSolicitado) {
     Serial.println("[ALERTA CRÍTICO] - Botão SOS Acionado! Entrando na ISR de Software.");
     
-    // Força o desligamento imediato da sinalização de fundo (Amarela)
-    neopixelWrite(LED_BUILTIN, 0, 0, 0);  // apaga todas as luzes
+    // // Força o desligamento imediato da sinalização de fundo (Amarela)
+    // neopixelWrite(LED_BUILTIN, 0, 0, 0);  // apaga todas as luzes
     
     // Mantém o LED Vermelho fixo de forma prioritária por 3 segundos
     neopixelWrite(LED_BUILTIN, 50, 0, 0);  // vermelho
