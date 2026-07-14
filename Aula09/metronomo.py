@@ -22,13 +22,13 @@ import threading
 import os
 
 # --- Configuracao de pinos (BCM) ---
-SERVO_PIN = 12   # Saida PWM 50 Hz para o servo SG90
-BUZZER_PIN = 23  # Buzzer (ativo ou passivo, ver flag abaixo)
-LED_PIN = 18     # LED de status
+SERVO_PIN = 18   # Saida PWM 50 Hz para o servo SG90
+BUZZER_PIN = 12  # Buzzer (ativo ou passivo, ver flag abaixo)
+LED_PIN = 17     # LED de status
 BTN_INC = 16     # Botao incrementa BPM (pull-up interno, aciona para GND)
 BTN_DEC = 20     # Botao decrementa BPM
 
-BUZZER_PASSIVO = True          # True: gera tom via PWM; False: nivel logico
+BUZZER_PASSIVO = False          # True: gera tom via PWM; False: nivel logico
 ARQUIVO_ESTADO = "/home/pi/metronomo_bpm.txt"
 BPM_MIN, BPM_MAX, BPM_PASSO = 30, 240, 5
 DURACAO_PULSO = 0.1            # duracao do bip e do flash do LED (100 ms)
