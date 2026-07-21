@@ -3,12 +3,12 @@ import time
 import smbus2
 
 # --- CONFIGURAÇÃO DE PINOS E PERIFÉRICOS ---
-ROW_PINS = [6, 13, 19, 26]      # Linhas do Teclado
-COL_PINS = [12, 16, 20, 21]     # Colunas do Teclado
-TRIG_PIN = 24                   # Trigger HC-SR04
-ECHO_PIN = 25                   # Echo HC-SR04
+ROW_PINS = [16, 20, 21, 26]      # Linhas do Teclado
+COL_PINS = [19, 13, 6, 5]     # Colunas do Teclado
+TRIG_PIN = 14                   # Trigger HC-SR04
+ECHO_PIN = 15                   # Echo HC-SR04
 SERVO_PIN = 18                  # Servomotor (PWM)
-BUZZER_PIN = 23                 # Buzzer
+BUZZER_PIN = 12                 # Buzzer
 
 I2C_ADDR = 0x27                 # Ajuste para 0x3F se necessário
 PASSWORD_CORRECT = "1234"
